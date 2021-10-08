@@ -4,7 +4,7 @@ def bottles_of_beer(n: int):
     Args:
         n (int): [initial bottle count]
     """
-    for i in range(n+1, -1, -1):
+    for i in range(n, -1, -1):
         print(f'{i} bottles of beer on the wall, {i} bottles of beer.')
         if i == 0:
             print(f'Go to the store and buy some more, {n} bottles of beer on the wall...')
