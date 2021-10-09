@@ -19,8 +19,8 @@ The function iterates once through the input, then inside the iteration iterates
 ### 4 - Add To
 *O(n<sup>2</sup>)*:
 The function iterates through the input, and at each step, it iterates again up to the current iterator's value.
-This means that it iterates *1+2+...+n* times, which is equal to
-![formula](https://render.githubusercontent.com/render/math?math=e^{i%20\pi}=-1)
+This means that it iterates *1+2+...+n* times, which is equal to 
+![formula](http://www.sciweavers.org/upload/Tex2Img_1633800980/render.png)
 
 ### 5 - Middle
 *O(logn)*:
