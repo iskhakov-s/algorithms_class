@@ -11,10 +11,10 @@ def T(n):
 
 # t is T simplified
 def t(n):
-    return (-11/2)*(-1)**n + (12/5)*(-2)**n + (31/10)*(3)**n
+    return -3*(-2)**n + 8*(-1)**n + 4*(3)**n
 
 def main():
-    for i in range(1,9):
+    for i in range(3, 10):
         print(T(i), t(i))
 
 if __name__ == '__main__':

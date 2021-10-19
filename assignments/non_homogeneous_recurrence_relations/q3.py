@@ -9,10 +9,10 @@ def T(n):
 
 # t is T simplified
 def t(n):
-    return
+    return (9/4) + (3/4)*(3)**n + n*(1-n/2)
 
 def main():
-    for i in (2,4,5,7):
+    for i in range(10):
         print(T(i), t(i))
 
 if __name__ == '__main__':
