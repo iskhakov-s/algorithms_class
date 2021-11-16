@@ -70,3 +70,6 @@ T(n) = a*(-7.69464)^n
 2 = a
 T(n) = 2*(-7.69464)^n
 ```
+Something went wrong, only 1 root exists\
+WolframAlpha couldn't compute either...\
+The relation also gives negative values for odd numbers (see q4.py), which may be why it works strangely.
