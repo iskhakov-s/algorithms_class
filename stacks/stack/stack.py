@@ -30,6 +30,7 @@ class Stack:
         """
         return self.lst[-1]
     
+    @property
     def size(self) -> int:
         """[returns the number of items in the list]
 
@@ -37,6 +38,14 @@ class Stack:
             int: [the length of the list]
         """        
         return len(self.lst)
+    
+    def is_empty(self) -> bool:
+        """[determines if list is empty]
+
+        Returns:
+            bool: [True if empty else False]
+        """        
+        return True if self.size == 0 else False
         
     @classmethod
     def reverse(cls, stack: Stack):
@@ -73,4 +82,6 @@ class Stack:
                 unmatched_pairs -= 1
             if unmatched_pairs < 0:
                     return False
+        if unmatched_pairs != 0:
+            return False
         return True
