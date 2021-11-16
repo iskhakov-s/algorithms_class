@@ -1,5 +1,7 @@
-from ..stack import Stack
+import sys 
+sys.path.append('stacks//')
 
+from stack import Stack
 
 def q1():
     stk = Stack()
@@ -28,6 +30,14 @@ def q2():
     print(stk.pop())
     
 
-if __name__ == '__main__':
+def main():
     q1()
+    q2()
+    from stack import postfix
+    from operator import add, sub, mul
+    print(postfix(2,3,1,mul,add,9,sub))
 
+
+if __name__ == '__main__':
+    main()
+    

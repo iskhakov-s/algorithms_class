@@ -1,12 +1,13 @@
-from typing import Any
 from  __future__ import annotations
+from typing import Any, Union, Callable
 
 
 class Stack:
-    def __init__(self):
-        """[initializes a list, which will store the stack]
-        """        
+    def __init__(self, *items: Any) -> None:
+        """[initializes a list, which will store the stack, and pushes any items given]
+        """             
         self.lst = []
+        self.push(*items)
         
     def push(self, *items: Any) -> None:
         """[pushes items to the stack, from left to right]
@@ -58,7 +59,7 @@ class Stack:
             [type]: [the reversed stack]
         """        
         flipped = cls()
-        for _ in range(stack.size()):
+        for _ in range(stack.size):
             flipped.push(stack.pop())
         return flipped
     
@@ -75,7 +76,7 @@ class Stack:
             bool: [True if the Items come in pairs, else False]
         """        
         unmatched_pairs = 0
-        for _ in range(stack.size()):
+        for _ in range(stack.size):
             if (x := stack.pop()) == right:
                 unmatched_pairs += 1
             elif x == left:
@@ -85,3 +86,27 @@ class Stack:
         if unmatched_pairs != 0:
             return False
         return True
+    
+
+# TODO - allow string operators instead of calling the function versions
+def postfix(*items: Union[float, Callable[[float, float], float]]) -> float:
+    """[applies simple math expressions in postfix using stacks]
+
+    See operator module for word versions of some math operators
+    
+    Raises:
+        ValueError: [raised if the argument is not a number or function]
+
+    Returns:
+        float: [result of the expression]
+    """    
+    stk = Stack()
+    for item in items:
+        if isinstance(item, (int, float)):
+            stk.push(item)
+        elif callable(item):
+            num2, num1 = stk.pop(), stk.pop()
+            stk.push(item(num1, num2))
+        else:
+            raise ValueError('argument is not number or function')
+    return stk.peek()
