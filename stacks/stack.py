@@ -95,10 +95,7 @@ class Stack:
         :param Stack stack: the stack
         :rtype: Stack
         """
-        flipped = cls()
-        for _ in range(stack.size):
-            flipped.push(stack.pop())
-        return flipped
+        return cls(*stack.pop(stack.size))
     
     @classmethod
     def pairs_match(cls, stack: Stack, left: Any = '(', right: Any = ')') -> bool:
