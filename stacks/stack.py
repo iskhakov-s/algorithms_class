@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Any, Union, Callable
+from warnings import warn
 
 
 class Stack:
@@ -16,9 +17,7 @@ class Stack:
 
     def __str__(self):
         """
-        Returns stack items from left to right, equivalent to bottom to top
-
-        :return: stack as a str
+        Returns stack items from bottom to top as a str
         """
         return str(self.lst)
 
@@ -26,9 +25,6 @@ class Stack:
         """
         Returns length of the stack
         Equivalent to stack.size
-
-        :rtype: int
-        :return: length
         """
         return self.size
 
@@ -36,31 +32,33 @@ class Stack:
         """
         Adds items to the top of the stack
 
-        :exception IndexError: if pushing item would exceed the cap
+        :exception Warning: if pushing item would exceed the cap
         :param items: to be added
         """
         for i in items:
             if self.cap is not None and self.size >= self.cap:
-                raise IndexError(f'item could not be added, cap limit {self.cap} reached')
+                warn(f'item could not be added, cap limit {self.cap} reached')
+                break
             self.lst.append(i)
         
     def pop(self, num=1) -> Union[Any, list[Any]]:
         """
         Removes the top item from the stack
 
-        :exception IndexError: if stack has no items left
+        :exception Warning: if stack doesn't have enough items to pop
         :param int num: number of times to pop
         :return: the top item, or num top items from top to bottom in a list
         """
+        if self.size < num:
+            warn(f'too many pops for stack of size {self.size}')
+            return
+            
         if num == 1:
-            try:
-                self.lst.pop()
-            except IndexError:
-                raise IndexError('pop from empty stack')
+            return self.lst.pop()
 
         pop_list = []
-        for i in range(num):
-            pop_list.append(self.pop())
+        for _ in range(num):
+            pop_list.append(self.lst.pop())
         return pop_list
         
     def peek(self) -> Any:
@@ -73,18 +71,14 @@ class Stack:
     def size(self) -> int:
         """
         Returns the length of the stack
-
-        :rtype: int
         """
         return len(self.lst)
     
     def is_empty(self) -> bool:
         """
         Determines if the stack is empty
-
-        :rtype: bool
         """
-        return True if self.size == 0 else False
+        return self.size == 0
         
     @classmethod
     def reverse(cls, stack: Stack):
