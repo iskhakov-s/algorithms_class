@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Union, Callable
+from typing import Any, Union
 from warnings import warn
 
 
@@ -13,7 +13,7 @@ class Queue:
         """
         self.lst = []
         self.cap = cap
-        self.push(*items)
+        self.enqueue(*items)
 
     def __str__(self):
         """
@@ -35,11 +35,11 @@ class Queue:
         :exception Warning: if adding item would exceed the cap
         :param items: to be added
         """
-        for i in items:
+        for i, item in enumerate(items):
             if self.cap is not None and self.size >= self.cap:
                 warn(f'item could not be added, cap limit {self.cap} reached')
                 break
-            self.lst.insert(0, i)
+            self.lst.insert(i, item)
         
     def dequeue(self, num=1) -> Union[Any, list[Any]]:
         """

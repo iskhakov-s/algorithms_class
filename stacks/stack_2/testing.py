@@ -1,7 +1,8 @@
-import sys 
-sys.path.append('stacks//')
+import sys
 
+sys.path.append('..')
 from stack import Stack
+
 
 def q1():
     stk = Stack()
