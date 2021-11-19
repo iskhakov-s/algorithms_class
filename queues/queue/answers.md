@@ -1,8 +1,8 @@
 ## 1
 ### What does each queue operation do?
 `size` or `len`: returns the number of items in the queue \
-`push`: adds an item to the back of the queue \
-`pop`: removes the front item of the queue and returns it \
+`enqueue`: adds an item to the back of the queue \
+`dequeue`: removes the front item of the queue and returns it \
 `is_empty`: returns True if the queue is empty else False \
 `peek`: returns the front item of the queue without modifying the queue
 
@@ -23,7 +23,7 @@ The final contents of the queue are [9,7]
 
 ## 3
 ### Give an example of a queue in a real life situation.
-A queue can represent waiting in line at a store.
+A queue can represent waiting in line to order food.
 
 ## 4
 ### Describe an algorithm for reversing a list using a queue.
