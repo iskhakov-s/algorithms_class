@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append('queues//')
-from queues.queue import Queue
+from data_structures.queue import Queue
 
 
 def q2():
