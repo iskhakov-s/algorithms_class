@@ -1,84 +1,54 @@
 from __future__ import annotations
-from typing import Any, Union
-from warnings import warn
+from typing import Any, Callable
+from static_list import StaticList
 
 
-class Queue:
-    def __init__(self, *items: Any, cap: int = None) -> None:
-        """
-        initializes a list, which will store the queue, and enqueues any items given
+class Queue(StaticList):
+    def __init__(self, cap: int = 10) -> None:
+        super(Queue, self).__init__(cap)
+        self.front = 0
+        self.back = 0
+        self.is_looped = False
 
-        :param items: optional items to be enqueued
-        :param int cap: optional integer limiting size of queue
-        """
-        self.lst = []
-        self.cap = cap
-        self.enqueue(*items)
+    def __getitem__(self, index: int):
+        if index > self.size or index < 0:
+            raise ValueError('index out of range')
+        index += self.front
+        if index > self.cap:
+            index -= self.cap
+        return self.arr[index]
 
     def __str__(self):
-        """
-        Returns queue items from last to first as a str
-        """
-        return str(self.lst)
-
-    def __len__(self):
-        """
-        Returns length of the queue
-        Equivalent to queue.size
-        """
-        return self.size
-
-    def enqueue(self, *items: Any) -> None:
-        """
-        Adds items to the back of the queue
-
-        :exception Warning: if adding item would exceed the cap
-        :param items: to be added
-        """
-        for i, item in enumerate(items):
-            if self.cap is not None and self.size >= self.cap:
-                warn(f'item could not be added, cap limit {self.cap} reached')
-                break
-            self.lst.insert(i, item)
-        
-    def dequeue(self, num=1) -> Union[Any, list[Any]]:
-        """
-        Removes the oldest item from the queue
-
-        :exception Warning: if queue doesn't have any items to remove
-        :param int num: number of times to dequeue
-        :return: the front item, or num front items from back to front of a list
-        """
-        if self.size < num:
-            warn(f'too many dequeues for queue of size {self.size}')
-            return
-            
-        if num == 1:
-            return self.lst.pop()
-
-        pop_list = []
-        for _ in range(num):
-            pop_list.insert(0, self.lst.pop())
-        return pop_list
-        
-    def peek(self, by_oldest = True) -> Any:
-        """
-        Returns the oldest item from the queue without modification
-        """
-        if by_oldest:
-            return self.lst[-1]
+        if self.is_looped:
+            return str(self.arr[self.front:] + self.arr[:self.back])
         else:
-            return self.lst[0]
+            return str(self.arr[self.front:self.back])
 
-    @property
-    def size(self) -> int:
-        """
-        Returns the length of the queue
-        """
-        return len(self.lst)
-    
-    def is_empty(self) -> bool:
-        """
-        Determines if the queue is empty
-        """
-        return self.size == 0
+    def enqueue(self, item: Any) -> None:
+        self.arr[self.back] = item
+        self.back += 1
+        if self.back == self.cap:
+            self.back = 0
+            self.is_looped = True
+        self.size += 1
+        if self.back == self.front:
+            self.resize()
+
+    def dequeue(self) -> Any:
+        item = self.arr[self.front]
+        self.front += 1
+        if self.front == self.cap:
+            self.front = 0
+            self.is_looped = True
+        self.size -= 1
+        return item
+
+    def peek(self) -> Any:
+        return self.arr[self.front]
+
+    def resize(self, func: Callable[[int], int] = lambda x: 2*x, new_cap: int = None) -> None:
+        if self.is_looped:
+            self.arr = self.arr[self.front:] + self.arr[:self.back] + ([None] * (self.cap-self.size))
+        super(Queue, self).resize(func, new_cap)
+        self.front = 0
+        self.back = self.size - 1
