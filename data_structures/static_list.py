@@ -2,6 +2,7 @@ from typing import Callable
 import logging
 
 
+# TODO: add docs
 class StaticList:
     def __init__(self, cap: int = 10) -> None:
         self.cap = cap if cap > 10 else 10
