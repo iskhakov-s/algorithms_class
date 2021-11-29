@@ -1,85 +1,31 @@
 from __future__ import annotations
 from typing import Any, Union, Callable
-from warnings import warn
+import logging
+
+from data_structures.static_list import StaticList
 
 
-class Stack:
-    def __init__(self, *items: Any, cap: int = None) -> None:
-        """
-        initializes a list, which will store the stack, and pushes any items given
-
-        :param items: optional items to be pushed to the stack
-        :param int cap: optional integer limiting size of stack
-        """
-        self.lst = []
-        self.cap = cap
-        self.push(*items)
-
-    def __str__(self):
-        """
-        Returns stack items from bottom to top as a str
-        """
-        return str(self.lst)
-
-    def __len__(self):
-        """
-        Returns length of the stack
-        Equivalent to stack.size
-        """
-        return self.size
-
-    def push(self, *items: Any) -> None:
-        """
-        Adds items to the top of the stack
-
-        :exception Warning: if pushing item would exceed the cap
-        :param items: to be added
-        """
-        for i in items:
-            if self.cap is not None and self.size >= self.cap:
-                warn(f'item could not be added, cap limit {self.cap} reached')
-                break
-            self.lst.append(i)
+# TODO: test, add docs
+class Stack(StaticList):
+    def push(self, item: Any) -> None:
+        self.arr.append(item)
+        self.size += 1
         
-    def pop(self, num=1) -> Union[Any, list[Any]]:
-        """
-        Removes the top item from the stack
-
-        :exception Warning: if stack doesn't have enough items to pop
-        :param int num: number of times to pop
-        :return: the top item, or num top items from top to bottom in a list
-        """
-        if self.size < num:
-            warn(f'too many pops for stack of size {self.size}')
-            return
-            
-        if num == 1:
-            return self.lst.pop()
-
-        pop_list = []
-        for _ in range(num):
-            pop_list.append(self.lst.pop())
-        return pop_list
+    def pop(self) -> Any:
+        self.size -= 1
+        item = self.arr[self.size]
+        self.arr[self.size] = None
+        return item
         
     def peek(self) -> Any:
         """
         Returns the top item from the stack without modification
         """
-        return self.lst[-1]
-
-    @property
-    def size(self) -> int:
-        """
-        Returns the length of the stack
-        """
-        return len(self.lst)
-    
-    def is_empty(self) -> bool:
-        """
-        Determines if the stack is empty
-        """
-        return self.size == 0
+        if self.size > 0:
+            return self.arr[self.size-1]
+        logging.warning('cannot peek, stack is empty')
         
+    # TODO: update all below methods: reverse, pairs_match, postfix
     @classmethod
     def reverse(cls, stack: Stack):
         """

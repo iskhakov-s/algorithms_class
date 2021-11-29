@@ -3,6 +3,7 @@ from typing import Any, Callable
 from static_list import StaticList
 
 
+# TODO: test, add docs
 class Queue(StaticList):
     def __init__(self, cap: int = 10) -> None:
         super(Queue, self).__init__(cap)
