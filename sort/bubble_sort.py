@@ -1,6 +1,4 @@
 import logging
-from operator import is_
-
 
 def bubble_sort(arr):
     for end in range(len(arr)-1, -1, -1):
