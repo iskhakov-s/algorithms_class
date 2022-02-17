@@ -28,11 +28,60 @@ def merge_sort(arr, first=True):
         return arr
 
 
+def merge(arr, l, m, r):
+    l_length = m - l + 1
+    r_length = r - m
+ 
+    left = [0] * (l_length)
+    right = [0] * (r_length)
+ 
+    for i in range(0, l_length):
+        left[i] = arr[l + i]
+ 
+    for j in range(0, r_length):
+        right[j] = arr[m + 1 + j]
+ 
+    i = 0    
+    j = 0     
+    k = l     
+ 
+    while i < l_length and j < r_length:
+        if left[i] <= right[j]:
+            arr[k] = left[i]
+            i += 1
+        else:
+            arr[k] = right[j]
+            j += 1
+        k += 1
+ 
+    while i < l_length:
+        arr[k] = left[i]
+        i += 1
+        k += 1
+ 
+    while j < r_length:
+        arr[k] = right[j]
+        j += 1
+        k += 1
+ 
+ 
+ 
+def msort(arr, l, r):
+    logging.info(str(arr))
+    if l < r:
+ 
+        m = l+(r-l)//2
+ 
+        msort(arr, l, m)
+        msort(arr, m+1, r)
+        merge(arr, l, m, r)
+
 
 def main():
     logging.basicConfig(level=logging.INFO)
     lst =  [314, 159, 265, 358, 979, 323, 846, 264, 338, 327, 950, 288, 419, 716]
     print(merge_sort(lst))
+    print(msort(lst))
 
 
 if __name__ == '__main__':
