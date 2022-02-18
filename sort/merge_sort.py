@@ -28,7 +28,7 @@ def merge_sort(arr, first=True):
         return arr
 
 
-def merge_sort2(lst, aux=None, lo=0, hi=None):
+def in_place_merge_sort(lst, aux=None, lo=0, hi=None):
     if aux is None:
         aux = [0]*len(lst)
     if hi is None:
@@ -59,12 +59,49 @@ def merge_sort2(lst, aux=None, lo=0, hi=None):
     lst[:] = aux[:]
 
 
+def merge_sort_bu(lst):
+    n = len(lst)
+    aux = [0]*n
+    width = 1
+    while width < n:
+        idxa = lo = 0
+        while lo < n:
+            idx1 = lo
+            idx2 = mid = lo + width
+            hi = mid + width
+            if hi > n:
+                hi = n
+            if mid > n:
+                mid = n
+            while idx1 < mid or idx2 < hi:
+                logging.info(str(lst) + ' ' + str(aux))
+                if idx1 == mid:
+                    aux[idxa] = lst[idx2]
+                    idx2 += 1
+                elif idx2 >= hi:
+                    aux[idxa] = lst[idx1]
+                    idx1 += 1
+                elif lst[idx1] < lst[idx2]:
+                    aux[idxa] = lst[idx1]
+                    idx1 += 1
+                else:
+                    aux[idxa] = lst[idx2]
+                    idx2 += 1
+                idxa += 1
+            lo = hi
+        for i in range(n):
+            lst[i] = aux[i]
+        width *= 2
+
+
 
 def main():
     logging.basicConfig(level=logging.INFO)
     lst =  [314, 159, 265, 358, 979, 323, 846, 264, 338, 327, 950, 288, 419, 716]
     print(merge_sort(lst))
-    print(merge_sort2(lst))
+    print(in_place_merge_sort(lst))
+    print(merge_sort_bu(lst))
+
 
 
 if __name__ == '__main__':
