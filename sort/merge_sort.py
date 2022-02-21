@@ -1,4 +1,5 @@
 import logging
+import math
 
 
 def merge_sort(arr, first=True):
@@ -28,35 +29,26 @@ def merge_sort(arr, first=True):
         return arr
 
 
-def in_place_merge_sort(lst, aux=None, lo=0, hi=None):
-    if aux is None:
-        aux = [0]*len(lst)
+def in_place_merge_sort(lst, lo=0, hi=None):
     if hi is None:
         hi = len(lst)
-    mid = (lo + hi) // 2
-    # Write the base case.
-    if (hi-lo) <= 1:
+    mid = (lo+hi)//2
+    if hi == lo:
         return
-    print(hi)
-    # After the completing the base case, uncomment below
-    merge_sort2(lst, aux, lo, mid)
-    merge_sort2(lst, aux, mid, hi)
-    idxa = lst.index(0) # Use the correct initial value of idxa, the index for aux.
-    idx1 = lo # Use the correct initial value of idx1, the index for the first half.
-    idx2 = mid # Use the correct initial value of idx2, the index for the second half.
-    while idx1 < mid or idx2 < hi:
-        # "base case": What are the conditions for finishing one of the halves?
-        
-        # How do you fill in aux?
-        if lst[idx2] < lst[idx1] or idx1 >= mid:
-            aux[idxa] = lst[idx2]
-            idx2 += 1
-        else:
-            aux[idxa] = lst[idx1]
-            idx1 += 1
-        idxa += 1
-    logging.info(str(lst), str(aux))
-    lst[:] = aux[:]
+    
+    in_place_merge_sort(lst, lo, mid)
+    in_place_merge_sort(lst, mid+1, hi)
+    
+    diff = hi - lo + 1
+    while diff > 0:
+        diff = 0 if diff <= 1 else int(math.ceil(diff / 2))
+        i = lo
+        while (i + diff) < hi:
+            j = i + diff
+            if lst[i] > lst[j]:
+                lst[i], lst[j] = lst[j], lst[i]
+            i += 1
+    logging.info(lst)
 
 
 def merge_sort_bu(lst):
@@ -97,10 +89,11 @@ def merge_sort_bu(lst):
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    lst =  [314, 159, 265, 358, 979, 323, 846, 264, 338, 327, 950, 288, 419, 716]
-    print(merge_sort(lst))
-    print(in_place_merge_sort(lst))
-    print(merge_sort_bu(lst))
+    lst =  [314, 159, 265, 358, 979, 323, 84, 626, 4338, 327, 950, 288, 419, 716]
+    # print(merge_sort(lst))
+    in_place_merge_sort(l := lst[:])
+    print(l)
+    # print(merge_sort_bu(lst))
 
 
 
