@@ -38,10 +38,16 @@ class BST:
 
         return x
 
-    # TODO
     def search(self, key):
         """Find and return the Node with key. Returns None if not found."""
-        node = Node(None)
+        node = self.root
+        while node != self.nil:
+            if key == node.key:
+                return node
+            elif key < node.key:
+                node = node.left
+            else:
+                node = node.right
         return node
 
     def minimum(self, min_node=None):
@@ -64,10 +70,19 @@ class BST:
             max_node = max_node.right
         return max_node
 
-    # TODO
     def successor(self, x):
         """Find the immediately-following Node after Node x."""
-        return Node(None)
+        if x.right != self.nil:
+            return self.minimum(x.right)
+        else:
+            p = x.parent
+            while p != self.nil:
+                if x == p.left:
+                    return p
+                else:
+                    x = p
+                    p = p.parent
+            return None
 
     def delete(self, x):
         """Deletes Node x from the tree."""
@@ -179,22 +194,28 @@ class BST:
             print(st)
 
 
-def main():
-    # tree1 = BST()
-    # for n in [1, 2, 3, 4]:
-    #     tree1.insert(Node(n))
-    # tree1.print_tree()
-    # tree1.rotate_left(tree1.root.right)
-    # tree1.print_tree()
+class AVL(BST):
+    def insert(self, x):
+        ins = super().insert(x)
+        while x != self.nil:
+            if x.left.height - x.right.height == 2:
+                if x.left != self.nil and x.left.left.height - x.left.right.height == 1:
+                    self.rotate_left(x.left)
+                self.rotate_right(x)
+            elif x.left.height - x.right.height == -2:
+                if x.right != self.nil and (x.right.right.height - x.right.left.height == 1):
+                    self.rotate_right(x.right)
+                self.rotate_left(x)
+            x = x.parent
+        return ins
 
-    tree2 = BST()
-    for n in [11, 2, 25, 1, 3, 13, 57, 9, 17, 90]:
-        tree2.insert(Node(n))
-    tree2.print_tree()
-    print()
-    tree2.rotate_right(tree2.root)
-    tree2.print_tree()
-    print(tree2.root.key)
+
+def main():
+    tree3 = AVL()
+    for n in [1, 2, 3, 4, 5, 6, 7]:
+        tree3.insert(Node(n))
+        tree3.print_tree()
+        print()
 
 
 if __name__ == "__main__":
