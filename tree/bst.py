@@ -1,3 +1,6 @@
+import logging
+
+
 class Node:
     def __init__(self, key):
         self.key = key
@@ -5,6 +8,9 @@ class Node:
         self.right: Node = None
         self.parent: Node = None
         self.height: int = 0
+    
+    def __str__(self):
+        return str(f'key={self.key}; left={self.left.key}; right={self.right.key}; parent={self.parent.key}; height={self.height}')
 
 
 class BST:
@@ -106,7 +112,7 @@ class BST:
             x.parent.right = y
         y.parent = x.parent
         x.parent = x.left = x.right = None
-        self.fix_height(y)
+        self.fix_height(y.parent)
         return x
 
     def rotate_left(self, x):
@@ -152,6 +158,7 @@ class BST:
     def fix_height(self, x):
         """Corrects the height of Node x (after insertion or deletion)."""
         node = x
+        
         if node.left == self.nil and node.right == self.nil:
             node.height = 0
         else:
@@ -165,7 +172,6 @@ class BST:
 
     def print_tree(self, x=None, depth=0):
         """Prints the BST sideways."""
-        # Don't do anything with this.
         if x is None:
             x = self.root
         if x != self.nil:
@@ -195,28 +201,90 @@ class BST:
 
 
 class AVL(BST):
+    def bf(self, x):
+        return x.left.height - x.right.height
+
     def insert(self, x):
-        ins = super().insert(x)
+        super().insert(x)
+        ins = x
         while x != self.nil:
-            if x.left.height - x.right.height == 2:
-                if x.left != self.nil and x.left.left.height - x.left.right.height == 1:
+            if self.bf(x) == 2:
+                if self.bf(x.left) == -1:
                     self.rotate_left(x.left)
                 self.rotate_right(x)
-            elif x.left.height - x.right.height == -2:
-                if x.right != self.nil and (x.right.right.height - x.right.left.height == 1):
+                break
+            elif self.bf(x) == -2:
+                if self.bf(x.right) == 1:
                     self.rotate_right(x.right)
                 self.rotate_left(x)
-            x = x.parent
+                break
+            else:
+                x = x.parent
         return ins
 
+    def delete(self, x):
+        ins = x
+        super().delete(x)
+        x = x.parent
+        self.bf(self.root)
+        while x != self.nil:
+            if self.bf(x) == 2:
+                if self.bf(x.left) == -1:
+                    self.rotate_left(x.left)
+                self.rotate_right(x)
+                break
+            elif self.bf(x) == -2:
+                if self.bf(x.right) == 1:
+                    self.rotate_right(x.right)
+                self.rotate_left(x)
+                break
+            else:
+                x = x.parent
+        return ins
+    
+    def print_level_order(self):
+        q = []
+        q.append(self.root)
+        while q:
+            node = q.pop(0)
+            if node == self.nil:
+                continue
+            print(node.key)
+            q.append(node.left)
+            q.append(node.right)
+        return q
+    
+    def preorder_list(self, node=None, ans=None):
+        """Modifies and returns ans. Starting at node, keys are appended to ans, with preorder traversal."""
+        if ans is None:
+            ans = []
+        if node is None:
+            node = self.root
+        if node == self.nil:
+            return ans
+        ans.append(node.key)
+        self.preorder_list(node.left, ans)
+        return self.preorder_list(node.right, ans)
+
+    def inorder_list(self, node=None, ans=None):
+        """Modifies and returns ans. Starting at node, keys are appended to ans, with inorder traversal."""
+        
+        pass
+
+    def postorder_list(self, node=None, ans=None):
+        """Modifies and returns ans. Starting at node, keys are appended to ans, with postorder traversal."""
+        
+        pass
+        
 
 def main():
+    logging.basicConfig(level=logging.DEBUG)
     tree3 = AVL()
-    for n in [1, 2, 3, 4, 5, 6, 7]:
+    for n in range(5):
         tree3.insert(Node(n))
-        tree3.print_tree()
-        print()
-
+    tree3.delete(tree3.root)
+    tree3.print_tree()
+    print(tree3.root)
 
 if __name__ == "__main__":
     main()
