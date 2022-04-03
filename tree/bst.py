@@ -1,17 +1,4 @@
-import logging
-
-
-class Node:
-    def __init__(self, key):
-        self.key = key
-        self.left: Node = None
-        self.right: Node = None
-        self.parent: Node = None
-        self.height: int = 0
-    
-    def __str__(self):
-        return str(f'key={self.key}; left={self.left.key}; right={self.right.key}; parent={self.parent.key}; height={self.height}')
-
+from tree.node import Node
 
 class BST:
     def __init__(self):
@@ -165,8 +152,8 @@ class BST:
             node.height = max(node.left.height, node.right.height) + 1
         node = node.parent
 
-        while node != self.nil:
-            node.height = max(node.left.height, node.right.height) + 1
+        while node != self.nil and node.height != (mx := max(node.left.height, node.right.height) + 1):
+            node.height = mx
             node = node.parent
         return x.height
 
@@ -198,61 +185,19 @@ class BST:
                     q.append(node.right)
                     st += f"{node.key:^{2**(height-h)}}"
             print(st)
-
-
-class AVL(BST):
-    def bf(self, x):
-        return x.left.height - x.right.height
-
-    def insert(self, x):
-        super().insert(x)
-        ins = x
-        while x != self.nil:
-            if self.bf(x) == 2:
-                if self.bf(x.left) == -1:
-                    self.rotate_left(x.left)
-                self.rotate_right(x)
-                break
-            elif self.bf(x) == -2:
-                if self.bf(x.right) == 1:
-                    self.rotate_right(x.right)
-                self.rotate_left(x)
-                break
-            else:
-                x = x.parent
-        return ins
-
-    def delete(self, x):
-        ins = x
-        super().delete(x)
-        x = x.parent
-        self.bf(self.root)
-        while x != self.nil:
-            if self.bf(x) == 2:
-                if self.bf(x.left) == -1:
-                    self.rotate_left(x.left)
-                self.rotate_right(x)
-                break
-            elif self.bf(x) == -2:
-                if self.bf(x.right) == 1:
-                    self.rotate_right(x.right)
-                self.rotate_left(x)
-                break
-            else:
-                x = x.parent
-        return ins
-    
-    def print_level_order(self):
+            
+    def level_order_list(self):
+        lvl_lst = []
         q = []
         q.append(self.root)
         while q:
             node = q.pop(0)
             if node == self.nil:
                 continue
-            print(node.key)
+            lvl_lst.append(node.key)
             q.append(node.left)
             q.append(node.right)
-        return q
+        return lvl_lst
     
     def preorder_list(self, node=None, ans=None):
         """Modifies and returns ans. Starting at node, keys are appended to ans, with preorder traversal."""
@@ -268,23 +213,37 @@ class AVL(BST):
 
     def inorder_list(self, node=None, ans=None):
         """Modifies and returns ans. Starting at node, keys are appended to ans, with inorder traversal."""
-        
-        pass
+        if ans is None:
+            ans = []
+        if node is None:
+            node = self.root
+        if node == self.nil:
+            return ans
+        self.inorder_list(node.left, ans)
+        ans.append(node.key)
+        self.inorder_list(node.right, ans)
+        return ans
 
     def postorder_list(self, node=None, ans=None):
         """Modifies and returns ans. Starting at node, keys are appended to ans, with postorder traversal."""
-        
-        pass
-        
+        if ans is None:
+            ans = []
+        if node is None:
+            node = self.root
+        if node == self.nil:
+            return ans
+        self.postorder_list(node.left, ans)
+        self.postorder_list(node.right, ans)
+        ans.append(node.key)
+        return ans
+
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
-    tree3 = AVL()
-    for n in range(5):
-        tree3.insert(Node(n))
-    tree3.delete(tree3.root)
-    tree3.print_tree()
-    print(tree3.root)
+    tree = BST()
+    for n in range(10):
+        tree.insert(Node(n))
+    tree.print_tree()
+    print(tree.inorder_list())
 
 if __name__ == "__main__":
     main()
