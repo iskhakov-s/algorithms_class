@@ -1,4 +1,4 @@
-from tree.node import Node
+from node import Node
 
 class BST:
     def __init__(self):

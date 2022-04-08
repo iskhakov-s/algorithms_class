@@ -7,4 +7,4 @@ class Node:
         self.height: int = 0
     
     def __str__(self):
-        return str(f'key={self.key}; left={self.left.key}; right={self.right.key}; parent={self.parent.key}; height={self.height}')
+        return f'key={self.key}; left={self.left.key}; right={self.right.key}; parent={self.parent.key}; height={self.height}'
