@@ -68,3 +68,101 @@ class RBTree(BST):
         # This fixes the root color invariant.
         self.root.is_black = True
         return ins
+
+    def delete(self, x):
+        """Deletes node x and rebalances."""
+        if self.root == self.nil:
+            return
+        if x.left != self.nil and x.right != self.nil:
+            min_right = self.minimum(x.right)
+            x.key, min_right.key = min_right.key, x.key
+            x = min_right
+        if x.right == self.nil and x.left == self.nil:
+            y = self.nil
+        elif x.right == self.nil:
+            #x.left exists
+            y = x.left
+        elif x.left == self.nil:
+            #x.right exists
+            y = x.right
+        if x == self.root:
+            self.root = y
+        elif x == x.parent.left:
+            x.parent.left = y
+        else:
+            x.parent.right = y
+        y.parent = x.parent
+        self.fix_height(y.parent)
+        x.parent = x.left = x.right = None
+        if x.is_black:
+            self.delete_recolor(y)        
+        return x
+
+    def delete_recolor(self, x):
+        while x != self.root and not x.is_black:
+            if x == x.parent.left:
+                # x is left, s is right
+                # WRITE s
+                s = x.parent.right
+                if not s.is_black:
+                    # case 1: convert to case 2/3/4
+                    # two RECOLORs, one ROTATION, REASSIGN s
+                    x.parent.is_black = False
+                    s.is_black = True
+                    self.rotate_left(x.parent)    
+                
+                if s.left.is_black and s.right.is_black:
+                    # case 2: start over with the parent as x
+                    # one RECOLOR, REASSIGN x
+                    s.is_black = False
+                    x = x.parent
+
+                else:
+                    if s.right.is_black:
+                        # case 3: convert to case 4
+                        # two RECOLORs, one ROTATION, REASSIGN s
+                        s.left.is_black = False
+                        s.is_black = True
+                        self.rotate_right(s)
+                        
+                        
+                    # case 4: fix this and finish
+                    # three RECOLORs, one ROTATION, LEAVE loop
+                    s.is_black = x.parent.is_black
+                    x.parent.is_black = False
+                    s.right.is_black = False
+                    self.rotate_left(x.parent)
+                    
+            else:
+                # x is right, s is left
+                # WRITE s
+                s = x.parent.left
+                if not s.is_black:
+                    # case 1: convert to case 2/3/4
+                    # two RECOLORs, one ROTATION, REASSIGN s
+                    x.parent.is_black = False
+                    s.is_black = True
+                    self.rotate_right(x.parent)    
+                
+                if s.left.is_black and s.right.is_black:
+                    # case 2: start over with the parent as x
+                    # one RECOLOR, REASSIGN x
+                    s.is_black = False
+                    x = x.parent
+
+                else:
+                    if s.left.is_black:
+                        # case 3: convert to case 4
+                        # two RECOLORs, one ROTATION, REASSIGN s
+                        s.right.is_black = False
+                        s.is_black = True
+                        self.rotate_left(s)
+                        
+                        
+                    # case 4: fix this and finish
+                    # three RECOLORs, one ROTATION, LEAVE loop
+                    s.is_black = x.parent.is_black
+                    x.parent.is_black = False
+                    s.left.is_black = False
+                    self.rotate_right(x.parent)
+        x.is_black = True
