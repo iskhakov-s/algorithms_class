@@ -1,4 +1,6 @@
-from tree.node import Node
+import logging
+from node import Node
+
 
 class BST:
     def __init__(self):
@@ -145,14 +147,16 @@ class BST:
     def fix_height(self, x):
         """Corrects the height of Node x (after insertion or deletion)."""
         node = x
-        
+
         if node.left == self.nil and node.right == self.nil:
             node.height = 0
         else:
             node.height = max(node.left.height, node.right.height) + 1
         node = node.parent
 
-        while node != self.nil and node.height != (mx := max(node.left.height, node.right.height) + 1):
+        while node != self.nil and node.height != (
+            mx := max(node.left.height, node.right.height) + 1
+        ):
             node.height = mx
             node = node.parent
         return x.height
@@ -185,7 +189,7 @@ class BST:
                     q.append(node.right)
                     st += f"{node.key:^{2**(height-h)}}"
             print(st)
-            
+
     def level_order_list(self):
         lvl_lst = []
         q = []
@@ -198,7 +202,7 @@ class BST:
             q.append(node.left)
             q.append(node.right)
         return lvl_lst
-    
+
     def preorder_list(self, node=None, ans=None):
         """Modifies and returns ans. Starting at node, keys are appended to ans, with preorder traversal."""
         if ans is None:
@@ -237,13 +241,30 @@ class BST:
         ans.append(node.key)
         return ans
 
+    def as_list(self, node=None, idx=None, arr=None):
+        if arr is None:
+            arr = [None] * (2 ** (self.root.height + 1) - 1)
+        if idx is None:
+            idx = 0
+        if node is None:
+            node = self.root
+            
+        if node == self.nil:
+            return arr
+        
+        arr[idx] = node.key
+        self.as_list(node.left, 2 * idx + 1, arr)
+        self.as_list(node.right, 2 * idx + 2, arr)
+        return arr
+
 
 def main():
     tree = BST()
-    for n in range(10):
+    for n in [6, 2, 7, 0, 3]:
         tree.insert(Node(n))
     tree.print_tree()
-    print(tree.inorder_list())
+    print(tree.as_list())
+
 
 if __name__ == "__main__":
     main()
